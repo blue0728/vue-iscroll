@@ -228,10 +228,12 @@ export default {
 		},
 		'scroll-to': function(x, y, time, easing) {
 			//滚动到任意的位置
+			this.reset();
 			this._scroller.scrollTo(x, y, time, easing);
 		},
 		'scroll-to-element': function(el, time, offsetX, offsetY, easing){
 			//滚动到这个元素的左上角位置。
+			this.reset();
 			this._scroller.scrollToElement(el, time, offsetX, offsetY, easing);
 		},
 		//下拉刷新，重置iscroll
