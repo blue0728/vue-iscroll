@@ -37,7 +37,7 @@ li{
 	transition: all linear 250ms;
 }
 .vue-iscroll-pulldown-im-up{
-	margin-top: -60px;
+	margin-top: -30px;
 }
 .vue-iscroll-pulldown-im-down{
 	transition: none;
@@ -50,13 +50,15 @@ li{
 <div id="app">
 	<scroll :bottom-height="btnHeight" :pulldown-config="pulldownDefaultConfig" :use-pulldown="true" @pulldown:loading="downLoading" :use-pullup="true" @pullup:loading="upLoading" @pullup:complete="upDone">
       	<ul>
-        	<li v-for="item in items" track-by="$index">{{item}}</li>
+        	<li @click="goto" v-for="item in items" track-by="$index">{{item}}</li>
       	</ul>
+    	<a class="aaa">112312313212</a>
     </scroll>
 </div>
 <script src="//cdn.bootcss.com/vue/1.0.25/vue.min.js"></script>
 <script src="/dist/vue-iscroll.js"></script>	
 <script>
+Vue.config.devtools = true;
 new Vue({
 	el: '#app',
 	components: {
@@ -69,20 +71,20 @@ new Vue({
 		  	pulldownDefaultConfig:  {
 				content: '下拉刷新',
 				pullUpHeight: 30,
-				height: 20,
+				height: 30,
 				autoRefresh: false,
 				upContent: '释放刷新',
 				downContent: '下拉刷新',
 				loadingContent: '加载中...',
 				clsPrefix: 'vue-iscroll-pulldown-im-'
-			}
+			},
+			height: 0
 		}
 	},
 	ready(){
-		setTimeout(()=>{
-		  	this.items = [1,2,3,4,5,6,7,8,9,10,11];
+		
+		  	this.items = [1,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11];
 		  	this.$broadcast('scroll-reset','container');
-		},2000)
 	},
 	methods: {
 		onScrollEnd(){
@@ -94,6 +96,10 @@ new Vue({
 			    this.items.unshift(-3,-2,-1,0);
 			    this.$broadcast('pulldown:reset',uuid)
 			},3000)
+		},
+		goto(){
+			console.log(this)
+			this.$broadcast('scroll-to-element', document.querySelector(".aaa"))
 		},
 		upLoading(uuid){
 			if(this.items.length<15){
@@ -111,7 +117,7 @@ new Vue({
 			}
 		},
 		upDone(uuid){
-		  	alert('done')
+		  	//alert('done')
 		}
 	}
 })	
