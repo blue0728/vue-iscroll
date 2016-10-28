@@ -212,7 +212,6 @@ export default {
 			//console.log('reset');
 			//console.log(this._scroller);
 			this._scroller && setTimeout(() => {
-				console.log('refresh')
 				this._scroller.refresh();
 			}, timeout);
 		},
@@ -231,8 +230,7 @@ export default {
 		'pulldown:reset': function(uuid) {
 			if (uuid === this.uuid) {
 				this.pulldown.reset(() => {
-					//repaint,timeout需要设置长一点
-					this.reset(1000);
+					this.reset();
 				})
 			}
 		},
@@ -240,8 +238,7 @@ export default {
 		'pullup:reset': function(uuid) {
 			if (uuid === this.uuid) {
 				this.pullup.reset(() => {
-					//repaint,timeout需要设置长一点
-					this.reset(1000);
+					this.reset();
 				})
 			}
 		},
@@ -249,7 +246,7 @@ export default {
 		'pullup:done': function() {
 			if (true) {
 				this.pullup.complete(() => {
-					this.reset(1000);
+					this.reset();
 				});
 
 				this.complete();
