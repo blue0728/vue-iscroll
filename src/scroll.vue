@@ -20,7 +20,7 @@ import {
 
 var pullThreshold = 5;
 
-const pulldownDefaultConfig = () => ({
+const pulldownDefaultConfig = {
 	content: 'Pull Down To Refresh',
 	height: 60,
 	autoRefresh: false,
@@ -28,8 +28,8 @@ const pulldownDefaultConfig = () => ({
 	downContent: 'Release To Refresh',
 	loadingContent: 'Loading...',
 	clsPrefix: 'vue-iscroll-pulldown-'
-})
-const pullupDefaultConfig = () => ({
+}
+const pullupDefaultConfig = {
 	content: 'Pull Up To Refresh',
 	pullUpHeight: 60,
 	height: 40,
@@ -38,7 +38,7 @@ const pullupDefaultConfig = () => ({
 	downContent: 'Pull Up To Refresh',
 	loadingContent: 'Loading...',
 	clsPrefix: 'vue-iscroll-pullup-'
-})
+}
 
 export default {
 	name: "vue-iscroller",
@@ -92,7 +92,7 @@ export default {
 		});
 		if (this.usePulldown) {
 			// if use slot=pulldown
-			let config = Object.assign(pulldownDefaultConfig(), this.pulldownConfig);
+			let config = Object.assign(pulldownDefaultConfig, this.pulldownConfig);
 			config.container = this.$el.querySelector('.vue-iscroll-scroller');
 
 			if (!config.container) {
@@ -108,7 +108,7 @@ export default {
 		}
 
 		if (this.usePullup) {
-			let config = Object.assign(pullupDefaultConfig(), this.pullupConfig);
+			let config = Object.assign(pullupDefaultConfig, this.pullupConfig);
 			config.container = this.$el.querySelector('.vue-iscroll-scroller');
 
 			if (!config.container) {
@@ -154,11 +154,12 @@ export default {
 			}
 
 			if (that.usePulldown) {
-				if (this.y > pulldownOffset + pullThreshold && !containClass(pulldown.element, 'vue-iscroll-pulldown-down')) {
+				let config = Object.assign(pulldownDefaultConfig, this.pulldownConfig);
+				if (this.y > pulldownOffset + pullThreshold && !containClass(pulldown.element, config.clsPrefix + 'down')) {
 					pulldown.release();
-					console.log('call release')
+					//console.log('call release')
 					this.scrollBy(0, -pulldownOffset, 0); // Adjust scrolling position to match the change in pullDownEl's margin-top
-				} else if (this.y < 0 && containClass(pulldown.element, 'vue-iscroll-pulldown-down')) { // User changes his mind...
+				} else if (this.y < 0 && containClass(pulldown.element,  config.clsPrefix + 'down')) { // User changes his mind...
 					pulldown.pull();
 					this.scrollBy(0, pulldownOffset, 0); // Adjust scrolling position to match the change in pullDownEl's margin-top
 				}
@@ -166,11 +167,11 @@ export default {
 			}
 
 			if (that.usePullup) {
-
-				if (this.y < (this.maxScrollY - pullupOffset + pullThreshold) && !containClass(pullup.element, 'vue-iscroll-pullup-up')) {
+				let config = Object.assign(pullupDefaultConfig, this.pullupConfig);
+				if (this.y < (this.maxScrollY - pullupOffset + pullThreshold) && !containClass(pullup.element, config.clsPrefix + 'up')) {
 					pullup.release();
 
-				} else if (this.y > (this.maxScrollY - pullupOffset + pullThreshold) && containClass(pullup.element, 'vue-iscroll-pullup-up')) {
+				} else if (this.y > (this.maxScrollY - pullupOffset + pullThreshold) && containClass(pullup.element, config.clsPrefix + 'up')) {
 					pullup.push();
 				}
 			}
@@ -179,17 +180,22 @@ export default {
 		})
 
 		that._scroller.on('scrollEnd', function() {
-			if (pulldown && containClass(pulldown.element, 'vue-iscroll-pulldown-down')) {
-				console.log('scroll end')
-				pulldown.loading();
+			if(pulldown){
+				let config = Object.assign(pulldownDefaultConfig, this.pulldownConfig);
+				if(containClass(pulldown.element,  config.clsPrefix + 'down')){
+					//console.log('scroll end')
+					pulldown.loading();
+				}
 			}
 
-			if (pullup && containClass(pullup.element, 'vue-iscroll-pullup-up')) {
-				console.log('scroll end');
-				console.log(this)
+			if(pullup){
+				let config = Object.assign(pullupDefaultConfig, this.pullupConfig);
+				if(containClass(pullup.element, config.clsPrefix + 'up')){
+					//console.log('scroll end');
+					//console.log(this)
 					//this.scrollBy(0,-pullupOffset, 0);
-				pullup.loading();
-
+					pullup.loading();
+				}
 			}
 
 			if (startPos === -1000) {
@@ -203,8 +209,8 @@ export default {
 
 	methods: {
 		reset(timeout = 0) {
-			console.log('reset');
-			console.log(this._scroller);
+			//console.log('reset');
+			//console.log(this._scroller);
 			this._scroller && setTimeout(() => {
 				console.log('refresh')
 				this._scroller.refresh();
@@ -218,7 +224,7 @@ export default {
 	},
 	events: {
 		'scroll-reset': function(uuid) {
-			console.log('reset event')
+			//console.log('reset event')
 			this.reset();
 		},
 		//下拉刷新，重置iscroll
@@ -258,12 +264,12 @@ export default {
 </script>
 <style>
 .vue-iscroll-wrapper{
-position: absolute;
-z-index: 1;
-top: 0;
-left: 0;
-width: 100%;
-overflow: hidden;
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	width: 100%;
+	overflow: hidden;
 }
 .vue-iscroll-scroller{
 	position: absolute;
@@ -278,7 +284,7 @@ overflow: hidden;
 	margin-top: -60px;
 }
 .vue-iscroll-pulldown-down{
-		transition: none;
+	transition: none;
 }
 .vue-iscroll-pulldown-loading{
 	transition: none;

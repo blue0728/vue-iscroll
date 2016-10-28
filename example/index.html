@@ -31,10 +31,24 @@ li{
   background: green;
   border: none;
 }
+.vue-iscroll-pulldown-im-container,.vue-iscroll-pullup-im-container{
+	margin-top: 0;
+	background: #fff;
+	transition: all linear 250ms;
+}
+.vue-iscroll-pulldown-im-up{
+	margin-top: -60px;
+}
+.vue-iscroll-pulldown-im-down{
+	transition: none;
+}
+.vue-iscroll-pulldown-im-loading{
+	transition: none;
+}
 </style>
 <body>
 <div id="app">
-	<scroll :bottom-height="btnHeight" :use-pulldown="true" @pulldown:loading="downLoading" :use-pullup="true" @pullup:loading="upLoading" @pullup:complete="upDone">
+	<scroll :bottom-height="btnHeight" :pulldown-config="pulldownDefaultConfig" :use-pulldown="true" @pulldown:loading="downLoading" :use-pullup="true" @pullup:loading="upLoading" @pullup:complete="upDone">
       	<ul>
         	<li v-for="item in items" track-by="$index">{{item}}</li>
       	</ul>
@@ -51,7 +65,17 @@ new Vue({
 	data () {
 		return {
 		  	btnHeight: '0',
-		  	items: []
+		  	items: [],
+		  	pulldownDefaultConfig:  {
+				content: '下拉刷新',
+				pullUpHeight: 30,
+				height: 20,
+				autoRefresh: false,
+				upContent: '释放刷新',
+				downContent: '下拉刷新',
+				loadingContent: '加载中...',
+				clsPrefix: 'vue-iscroll-pulldown-im-'
+			}
 		}
 	},
 	ready(){
