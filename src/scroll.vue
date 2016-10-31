@@ -39,10 +39,25 @@ const pullupDefaultConfig = {
 	loadingContent: 'Loading...',
 	clsPrefix: 'vue-iscroll-pullup-'
 }
+const scrollDefaultConfig = {
+	probeType: 2,
+	bounceTime: 250,
+	bounceEasing: 'quadratic',
+	mouseWheel: false,
+	scrollbars: true,
+	fadeScrollbars: true,
+	interactiveScrollbars: false,
+	scrollX: false,
+	scrollY: true
+}
 
 export default {
 	name: "vue-iscroller",
 	props: {
+		scrollConfig:  {
+			type: Object,
+			default: () => {}
+		},
 		bottomHeight: {
 			type: String,
 			default: '0'
@@ -77,19 +92,27 @@ export default {
 				break;
 			}
 		}
+
 		if (!content) {
 			throw new Error('no content is found');
 		}
 
-		this._scroller = new iScroll('.vue-iscroll-wrapper', {
-			probeType: 2,
-			bounceTime: 250,
-			bounceEasing: 'quadratic',
-			mouseWheel: false,
-			scrollbars: true,
-			fadeScrollbars: true,
-			interactiveScrollbars: false
-		});
+		var options = Object.assign(scrollDefaultConfig, this.scrollConfig);
+
+		if(options.scrollX){
+			//增加x轴宽度计算自适应宽度
+			const contentChild = content.childNodes;
+			let offsetWidth = 0;
+			for (let i = 0; i < contentChild.length; i++) {
+				if (contentChild[i].nodeType === 1) {
+					offsetWidth += contentChild[i].offsetWidth
+				}
+			}
+
+			this.$el.querySelector('.vue-iscroll-scroller').style.width = offsetWidth + 'px';
+		}
+
+		this._scroller = new iScroll('.vue-iscroll-wrapper', options);
 		if (this.usePulldown) {
 			// if use slot=pulldown
 			let config = Object.assign(pulldownDefaultConfig, this.pulldownConfig);
