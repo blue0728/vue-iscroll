@@ -245,6 +245,38 @@ export default {
 		}
 	},
 	events: {
+		'init-callback': function(uuid) {
+			//console.log('reset event')
+			this.$el.setAttribute('id', `vue-iscroll-scroller-${this.uuid}`);
+			let content = null;
+			const slotChildren = this.$el.querySelector('.vue-iscroll-scroller').childNodes;
+			for (let i = 0; i < slotChildren.length; i++) {
+				if (slotChildren[i].nodeType === 1) {
+					content = slotChildren[i];
+					break;
+				}
+			}
+
+			if (!content) {
+				throw new Error('no content is found');
+			}
+
+			var options = Object.assign(scrollDefaultConfig, this.scrollConfig);
+
+			if(options.scrollX){
+				//增加x轴宽度计算自适应宽度
+				const contentChild = content.childNodes;
+				let offsetWidth = 0;
+				for (let i = 0; i < contentChild.length; i++) {
+					if (contentChild[i].nodeType === 1) {
+						offsetWidth += contentChild[i].offsetWidth
+					}
+				}
+
+				this.$el.querySelector('.vue-iscroll-scroller').style.width = offsetWidth + 'px';
+			}
+			this.reset();
+		},
 		'scroll-reset': function(uuid) {
 			//console.log('reset event')
 			this.reset();
